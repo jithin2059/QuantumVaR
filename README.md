@@ -10,6 +10,7 @@ The dashboard includes automated visualizations and VaR required for a particula
 - Azure CosmosDB for MongoDB
 - Booststrap
 - Flask
+- yfinance (real-time stock database by yahoo)
 
 ## Usage
 
