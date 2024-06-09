@@ -43,7 +43,7 @@ To run the application, execute the `app.py` script:
 
 ```bash
 python3 app.py
-
+'''
 ### Deployment on Azure Linux VM
 
 Prerequisites
