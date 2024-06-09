@@ -4,12 +4,12 @@ QuantumVaR is a Python application that calculates Value-at-Risk (VaR) using a Q
 The dashboard includes automated visualizations and VaR required for a particular stock for an investor saying that at 95% confidence level how much money he can lose. 
 
 ## Technologies
-Python
-Qiskit (IBM) quantum computer simulator
-Azure VM
-Azure CosmosDB for MongoDB
-Booststrap
-Flask
+- Python
+- Qiskit (IBM) quantum computer simulator
+- Azure VM
+- Azure CosmosDB for MongoDB
+- Booststrap
+- Flask
 
 ## Usage
 
@@ -17,7 +17,7 @@ Flask
 
 Make sure you have the following installed on your machine:
 
-- Python 3.x
+- Python 3.8 or more
 - Git
 
 ### Installation
