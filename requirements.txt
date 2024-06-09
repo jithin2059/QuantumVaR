@@ -1,0 +1,10 @@
+yfinance
+numpy
+pandas
+qiskit 
+flask
+plotly
+os
+sys
+pymongo
+dotenv
