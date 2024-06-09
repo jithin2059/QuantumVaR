@@ -41,7 +41,7 @@ Make sure you have the following installed on your machine:
 
 To run the application, execute the `app.py` script:
 
-```bash
+'''bash
 python3 app.py
 '''
 ### Deployment on Azure Linux VM
