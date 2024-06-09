@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock VaR Calculator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <style>
+        body {
+            background-image: url('static/123.avif');
+            background-size: cover;
+            background-attachment: fixed;
+            color: black;
+        }
+        .container {
+            background: rgba(255, 192, 203, 0.9); 
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 50px;
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        iframe {
+            border: 2px solid #fff;
+            border-radius: 5px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        iframe:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+        }
+        #loadingOverlay {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(36, 35, 35, 0.8);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #loadingOverlay img {
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>Hello, {{ user }}</h2>
+            <a href="/logout" class="btn btn-danger">Logout</a>
+        </div>
+        <h1 class="mt-5 text-center">Stock Value at Risk (VaR) Calculator</h1>
+        <form id="varForm" class="mt-3">
+            <div class="form-group">
+                <label for="stockName">Stock Name:</label>
+                <input type="text" class="form-control" id="stockName" placeholder="Enter stock symbol (e.g., AAPL)">
+            </div>
+            <div class="form-group">
+                <label for="investmentAmount">Investment Amount (USD):</label>
+                <input type="number" class="form-control" id="investmentAmount" placeholder="Enter investment amount">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Calculate VaR</button>
+        </form>
+
+        <div class="mt-5" id="result" style="display: none;">
+            <h3 class="text-center">Results Of VaR</h3>
+            <p><strong>Stock Name: <span id="resultStockName"></span></strong></p>
+            <p><strong>Investment Amount (USD): <span id="resultInvestmentAmount"></span></strong></p>
+            <p><strong>VaR 95%: <span id="resultVaR"></span></strong></p>
+            <p><strong>VaR 95% Amount (USD): <span id="resultVaRAmount"></span></strong></p>
+            <h4 class="text-center">Necessary Visualizations Over Stock</h4>
+            <div>
+                <iframe id="boxplotFrame" style="width: 100%; height: 400px;"></iframe>
+            </div>
+            <div class="mt-3">
+                <iframe id="closingPriceFrame" style="width: 100%; height: 400px;"></iframe>
+            </div>
+        </div>
+        <div class="mt-3">
+            <iframe id="histogramFrame" style="width: 100%; height: 400px;"></iframe>
+        </div>
+        <div class="mt-3">
+            <iframe id="macdFrame" style="width: 100%; height: 400px;"></iframe>
+        </div>
+        <div class="mt-3">
+            <iframe id="movingaveragesFrame" style="width: 100%; height: 400px;"></iframe>
+        </div>
+        <div class="mt-3">
+            <iframe id="rsiFrame" style="width: 100%; height: 400px;"></iframe>
+        </div>
+
+        <div id="loadingOverlay">
+            <img src="/static/tenor.gif" alt="Loading...">
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#loadingOverlay').hide();
+
+            $('#varForm').on('submit', function (e) {
+                e.preventDefault();
+                $('#loadingOverlay').show();
+
+                const stockName = $('#stockName').val();
+                const investmentAmount = $('#investmentAmount').val();
+
+                $.ajax({
+                    url: '/calculate_var',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        stock_name: stockName,
+                        investment_amount: investmentAmount
+                    }),
+                    success: function (data) {
+                        $('#resultStockName').text(data.stock_name);
+                        $('#resultInvestmentAmount').text(data.investment_amount);
+                        $('#resultVaR').text(data.VaR_95);
+                        $('#resultVaRAmount').text(data.VaR_95_amount_usd);
+                        $('#boxplotFrame').attr('src', data.boxplot_url);
+                        $('#closingPriceFrame').attr('src', data.closing_price_url);
+                        $('#candlestickFrame').attr('src', data.candlestick_url);
+                        $('#histogramFrame').attr('src', data.histogram_url);
+                        $('#macdFrame').attr('src', data.macd_url);
+                        $('#movingaveragesFrame').attr('src', data.moving_averages_url);
+                        $('#rsiFrame').attr('src', data.rsi_url);
+                        $('#volumeFrame').attr('src', data.volume_url);
+                        $('#result').show();
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error: ' + xhr.responseJSON.error);
+                    },
+                    complete: function () {
+                        $('#loadingOverlay').hide();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
